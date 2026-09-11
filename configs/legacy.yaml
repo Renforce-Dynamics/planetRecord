@@ -1,0 +1,15 @@
+version: 1
+
+onboard:
+  bind_host: 0.0.0.0
+  port: 50570
+
+planner:
+  endpoint: "@planetr"
+
+planetd:
+  onboard_endpoint: "@planetd_onboard"
+
+recording:
+  directory: recordings
+  flush_interval_s: 0.5

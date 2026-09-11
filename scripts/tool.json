@@ -1,0 +1,14 @@
+{
+  "module": "planetr",
+  "doctor": [
+    "-m",
+    "planetr",
+    "record",
+    "--check"
+  ],
+  "run": [
+    "-m",
+    "planetr",
+    "record"
+  ]
+}

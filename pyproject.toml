@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "planetr"
+version = "0.1.0"
+requires-python = ">=3.10"
+description = "planetr: independent Cadence ecosystem component"
+dependencies = ["cadence-config>=0.1,<0.2", "planetr-format>=0.1,<0.2", "planetr-client>=0.1,<0.2"]
+
+[project.scripts]
+planetr = "planetr.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["planetr*"]
+
+[tool.setuptools.package-data]
+"*" = ["**/*.yaml", "**/*.json", "**/*.xml", "**/*.STL", "**/*.stl", "**/*.onnx", "**/*.npz", "**/*.hex", "**/*.md", "**/*.lock", "**/LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
