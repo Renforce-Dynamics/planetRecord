@@ -1,28 +1,57 @@
 # planetRecord
 
-仓库与组件名称由 `PlanetR` 更名为 `planetRecord`。现有安装包、Python import 与命令仍使用 `planetr`、`planetr-client`、`planetr-format`，已有调用方可继续使用；`PRR1`、`A3DB` 及录制 schema 也保持兼容。
+**Robot recording, asynchronous capture and replay.**
 
-通用录制服务，stream 和 schema 由生产者与配置声明。磁盘写入与控制周期隔离；异步客户端队列有界，丢弃和错误可计数。
+planetRecord stores producer-defined streams and schemas in versioned sessions. A bounded asynchronous client keeps network and disk work out of control cycles; recording tracks dropped data, errors and sequence gaps.
+
+## Quick start
+
+Requires Linux, Python 3.10+ and `uv`.
 
 ```bash
-./scripts/setup.sh --wheelhouse /path/to/wheels
+git clone --recurse-submodules git@github.com:Renforce-Dynamics/planetRecord.git
+cd planetRecord
+./scripts/bootstrap.sh
 ./scripts/doctor.sh
-./scripts/run.sh -- --config configs/default.yaml
+./scripts/run.sh -- --duration-s 1
+./scripts/test.sh
+```
+
+## Packages and dependencies
+
+| Package | Responsibility |
+| --- | --- |
+| `planetr-format` | Versioned envelopes and format contracts |
+| `planetr-client` | Bounded asynchronous producer client |
+| `planetr` | Session storage, ingress and replay |
+
+The `external/cadence` submodule supplies only `cadence-config`. Recording does not require a planner, kinematics, MuJoCo or inference packages.
+
+## Configuration and usage
+
+```bash
+.venv/bin/planetr record --config configs/default.yaml --check
 .venv/bin/planetr replay recordings/SESSION
+.venv/bin/planetr legacy --config configs/legacy.yaml --duration-s 1
+```
+
+The generic `record` schema declares `bind`, `streams` and `directory`. The compatibility `legacy` schema declares `onboard`, `planner` and `recording` for PRR1/A3DB ingress. Both use `cadence-config` for `extends`, `compose` and package resources; these are distinct ingress schemas.
+
+Relative output directories are relative to the process working directory. Use an absolute output path for deployments. See [configuration and session semantics](docs/configuration.md).
+
+Sessions contain `meta.json`, stream JSONL files and recording statistics. `complete` reports no detected loss within the received data; UDP has no delivery acknowledgement. Timed replay requires one producer clock domain. Business transforms such as racket FK belong to the consuming application; `cadence-rally derive` writes derived data separately.
+
+## Development
+
+```bash
+./scripts/submodules.sh init    # initialize or restore pinned dependencies
+./scripts/submodules.sh check
 ./scripts/test.sh
 ./scripts/build.sh
 ```
 
-三个包分别发布：`planetr-format` 定义版本化 envelope，`planetr-client` 提供异步发送，`planetr` 保存 session 并回放。均不依赖 planner、运动学、ONNX、MuJoCo 或 NumPy。
+Submodules pin source commits; Python requirements describe package compatibility. Bootstrap installs only the explicit packages in `source-workspace.json`. `scripts/setup.sh --wheelhouse /path/to/wheels` is available for package-based installation. Upgrade dependencies by committing reviewed submodule revisions with the parent repository.
 
-```python
-from planetr_client import RecordClient, RecordEnvelope
-client = RecordClient(capacity=256)
-client.publish(RecordEnvelope("demo", "robot/state", "robot.state.v1",
-                             "controller", 0, 1234, {"q": [0.0, 0.2]}))
-client.close()
-```
+## Authorship and license
 
-每个 session 包含 `meta.json`、各流 JSONL 与 `recording_stats.json`。schema 不符会拒绝，间断或写入错误使 session 标记 incomplete。`complete` 表示接收范围内没有已检测的损失或错误；UDP 不提供端到端送达确认。回放保留原始 payload；有多个生产者时，不假定它们的单调时钟可直接排序。`--speed` 的定时回放要求单一生产者时钟域。
-
-`planetr legacy --config configs/legacy.yaml` 接收保留的 A3DB / PRR1 协议，仅做协议适配及存储。A3 球拍 FK 派生处理在应用命令 `cadence-rally derive SESSION DESTINATION` 中，输出独立目录，不改写原始 session。
+Developed and maintained by [Renforce Dynamics](https://github.com/Renforce-Dynamics). See [AUTHORS.md](AUTHORS.md). Project code is available under the [MIT License](LICENSE).

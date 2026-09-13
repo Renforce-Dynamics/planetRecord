@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "external/cadence/packages/cadence-config",
+    "packages/planetr-format",
+    "packages/planetr-client",
+    "."
+  ]
+}

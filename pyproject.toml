@@ -3,10 +3,14 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
+authors = [{name = "Renforce Dynamics"}]
+maintainers = [{name = "Renforce Dynamics"}]
+readme = "README.md"
+license = {file = "LICENSE"}
 name = "planetr"
 version = "0.1.0"
 requires-python = ">=3.10"
-description = "planetr: independent Cadence ecosystem component"
+description = "Robot recording, asynchronous capture and replay"
 dependencies = ["cadence-config>=0.1,<0.2", "planetr-format>=0.1,<0.2", "planetr-client>=0.1,<0.2"]
 
 [project.scripts]
@@ -21,3 +25,8 @@ include = ["planetr*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[project.urls]
+Repository = "https://github.com/Renforce-Dynamics/planetRecord"
+Issues = "https://github.com/Renforce-Dynamics/planetRecord/issues"
+Documentation = "https://github.com/Renforce-Dynamics/planetRecord#readme"

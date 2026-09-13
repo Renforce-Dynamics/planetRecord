@@ -10,7 +10,7 @@ import socket
 import time
 import zlib
 
-import yaml
+from cadence_config import load_config, validate_keys
 
 
 from .protocol import A3DebugReassembler
@@ -29,11 +29,20 @@ def _unix_address(endpoint: str) -> str:
 
 
 def _load(path: str | Path) -> dict:
-    source = Path(path).expanduser().resolve()
-    raw = yaml.safe_load(source.read_text(encoding="utf-8")) or {}
+    resolved = load_config(
+        path,
+        allowed={"version", "onboard", "planner", "planetd", "recording"},
+        required={"version", "onboard", "planner", "recording"},
+    )
+    raw = resolved.data
     if int(raw.get("version", 0)) != 1:
         raise ValueError("PlanetRecord config version must be 1")
-    raw["_source"] = source
+    validate_keys(raw["onboard"], {"bind_host", "port"}, required={"bind_host", "port"})
+    validate_keys(raw["planner"], {"endpoint"}, required={"endpoint"})
+    validate_keys(raw["recording"], {"directory", "flush_interval_s"}, required={"directory"})
+    if "planetd" in raw:
+        validate_keys(raw["planetd"], {"onboard_endpoint"})
+    raw["_source"] = resolved.source
     return raw
 
 

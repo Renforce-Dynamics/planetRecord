@@ -1,0 +1,3 @@
+[submodule "cadence"]
+	path = external/cadence
+	url = git@github.com:Renforce-Dynamics/cadence.git
