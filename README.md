@@ -1,6 +1,6 @@
-# PlanetRecord
+# planetRecord
 
-仓库与组件名称由 `PlanetR` 更名为 `PlanetRecord`。现有安装包、Python import 与命令仍使用 `planetr`、`planetr-client`、`planetr-format`，已有调用方可继续使用；`PRR1`、`A3DB` 及录制 schema 也保持兼容。
+仓库与组件名称由 `PlanetR` 更名为 `planetRecord`。现有安装包、Python import 与命令仍使用 `planetr`、`planetr-client`、`planetr-format`，已有调用方可继续使用；`PRR1`、`A3DB` 及录制 schema 也保持兼容。
 
 通用录制服务，stream 和 schema 由生产者与配置声明。磁盘写入与控制周期隔离；异步客户端队列有界，丢弃和错误可计数。
 
