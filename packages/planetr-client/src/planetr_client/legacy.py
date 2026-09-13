@@ -202,7 +202,7 @@ class SessionRecorder:
 
 
 class SessionRecordPublisher:
-    """Send source/trace records to PlanetR without writing planner-local files."""
+    """Send source/trace records to PlanetRecord without writing planner-local files."""
 
     def __init__(
         self,
@@ -216,7 +216,7 @@ class SessionRecordPublisher:
         metadata: Mapping[str, Any] | None = None,
     ) -> None:
         if not endpoint.startswith("@"):
-            raise ValueError("PlanetR endpoint must be a Linux abstract address")
+            raise ValueError("PlanetRecord endpoint must be a Linux abstract address")
         self.endpoint = str(endpoint)
         self.session_dir = f"planetr:{self.endpoint}"
         self.robot = str(robot)
@@ -331,7 +331,7 @@ class SessionRecordPublisher:
                 ).encode("utf-8")
                 encoded = b"PRR1" + zlib.compress(encoded_json, level=1)
                 if len(encoded) > 60_000:
-                    raise ValueError("PlanetR record exceeds 60000 bytes")
+                    raise ValueError("PlanetRecord record exceeds 60000 bytes")
                 self._socket.sendto(encoded, address)
                 self._records_written += 1
             except (BlockingIOError, OSError, TypeError, ValueError) as error:

@@ -69,7 +69,7 @@ def receive(config, duration_s=0):
     worker = Thread(target=writer, name="planetr-writer", daemon=True)
     worker.start()
     started = time.monotonic()
-    print("PlanetR listening on " + str(sock.getsockname()), flush=True)
+    print("PlanetRecord listening on " + str(sock.getsockname()), flush=True)
     try:
         while duration_s <= 0 or time.monotonic() - started < duration_s:
             try:
@@ -134,6 +134,6 @@ def main(argv=None):
             },
             required={"version", "bind", "streams", "directory"},
         )
-        print("PlanetR configuration valid")
+        print("PlanetRecord configuration valid")
         return 0
     return receive(cfg, args.duration_s)

@@ -24,7 +24,7 @@ def _debug_stream(frame: dict) -> str:
 
 def _unix_address(endpoint: str) -> str:
     if not endpoint.startswith("@"):
-        raise ValueError("PlanetR endpoint must start with @")
+        raise ValueError("PlanetRecord endpoint must start with @")
     return "\0" + endpoint[1:]
 
 
@@ -32,7 +32,7 @@ def _load(path: str | Path) -> dict:
     source = Path(path).expanduser().resolve()
     raw = yaml.safe_load(source.read_text(encoding="utf-8")) or {}
     if int(raw.get("version", 0)) != 1:
-        raise ValueError("PlanetR config version must be 1")
+        raise ValueError("PlanetRecord config version must be 1")
     raw["_source"] = source
     return raw
 
@@ -94,12 +94,12 @@ def run(
                     datagram = unix.recv(65_535)
                     try:
                         if not datagram.startswith(b"PRR1"):
-                            raise ValueError("invalid PlanetR record magic")
+                            raise ValueError("invalid PlanetRecord record magic")
                         envelope = json.loads(
                             zlib.decompress(datagram[4:]).decode("utf-8")
                         )
                         if envelope.get("schema") != "planetr.ingress.v1":
-                            raise ValueError("invalid PlanetR ingress schema")
+                            raise ValueError("invalid PlanetRecord ingress schema")
                         recorder.record(
                             str(envelope["kind"]),
                             dict(envelope["payload"]),

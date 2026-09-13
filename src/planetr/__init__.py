@@ -1,1 +1,1 @@
-"""PlanetR: standalone recorder for planner and onboard debug streams."""
+"""PlanetRecord: standalone recorder for planner and onboard debug streams."""
