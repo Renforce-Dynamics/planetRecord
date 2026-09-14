@@ -1,59 +1,61 @@
 # planetRecord
 
-**Robot recording, asynchronous capture and replay.**
+录制生产者定义的数据流，保存会话、统计信息并按时间回放。
 
-planetRecord stores producer-defined streams and schemas in versioned sessions. A bounded asynchronous client keeps network and disk work out of control cycles; recording tracks dropped data, errors and sequence gaps.
+## 安装与录制
 
-## Quick start
-
-Requires Linux, Python 3.10+ and `uv`.
+需要 Linux、Python 3.10+、`uv`。
 
 ```bash
 git clone --recurse-submodules git@github.com:Renforce-Dynamics/planetRecord.git
 cd planetRecord
 ./scripts/bootstrap.sh
-./scripts/doctor.sh
-./scripts/run.sh -- --duration-s 1
-./scripts/test.sh
+
+./scripts/run.sh -- --config pkg://planetr/data/default.yaml
 ```
 
-## Packages and dependencies
+默认监听 `127.0.0.1:50571`，输出到 `recordings/`。生产者使用
+`planetr-client` 发送带流名和 schema 的数据；Ctrl+C 停止并完成会话写入。
 
-| Package | Responsibility |
-| --- | --- |
-| `planetr-format` | Versioned envelopes and format contracts |
-| `planetr-client` | Bounded asynchronous producer client |
-| `planetr` | Session storage, ingress and replay |
+## 选择数据流与输出位置
 
-The [planetConfig](https://github.com/Renforce-Dynamics/planetConfig) submodule supplies `planet-config`. Bootstrap installs that loader and the three local packages. The complete source and package dependency graph is independent of any robot runtime or SDK.
+新建 `record-site.yaml`：
 
-## Configuration and usage
+```yaml
+extends: pkg://planetr/data/default.yaml
+bind:
+  host: 0.0.0.0
+  port: 50571
+directory: /data/recordings
+```
 
 ```bash
-.venv/bin/planetr record --config configs/default.yaml --check
-.venv/bin/planetr replay recordings/SESSION
-.venv/bin/planetr legacy --config configs/legacy.yaml --duration-s 1
+./scripts/run.sh -- --config ./record-site.yaml
 ```
 
-The generic `record` schema declares `bind`, `streams` and `directory`. The compatibility `legacy` schema declares `onboard`, `planner` and `recording` for PRR1/A3DB ingress. Both use `planet-config` for `extends`, `compose` and package resources; these are distinct ingress schemas.
+`streams` 声明流名、schema 和 JSONL 文件名。按需覆盖默认流，
+输出目录建议使用绝对路径；配置字段见 [配置文档](docs/configuration.md)。
 
-Relative output directories are relative to the process working directory. Use an absolute output path for deployments. See [configuration and session semantics](docs/configuration.md).
-
-Sessions contain `meta.json`, stream JSONL files and recording statistics. `complete` reports no detected loss within the received data; UDP has no delivery acknowledgement. Timed replay requires one producer clock domain. Business transforms such as racket FK belong to the consuming application; `cadence-rally derive` writes derived data separately.
-
-## Development
+## 回放与旧协议录制
 
 ```bash
-./scripts/submodules.sh init    # initialize or restore pinned dependencies
-./scripts/submodules.sh check
-./scripts/test.sh
-./scripts/build.sh
+# 按原始时间回放到标准输出；--speed 0 为尽快输出
+.venv/bin/planetr replay recordings/SESSION --speed 1
+
+# PRR1 / A3DB 兼容入口，使用独立的 legacy 配置
+.venv/bin/planetr legacy --config configs/legacy.yaml
 ```
 
-Submodules pin source commits; Python requirements describe package compatibility. Bootstrap installs only the explicit packages in `source-workspace.json`. `scripts/setup.sh --wheelhouse /path/to/wheels` is available for package-based installation. Upgrade dependencies by committing reviewed submodule revisions with the parent repository.
+将 `SESSION` 替换为实际会话目录。会话包含 `meta.json`、各流 JSONL 和录制统计。
+通用 record 与 legacy 的输入格式不同；UDP 统计不等同于传输送达确认。
 
-Tool defaults can be configured with `PLANET_PYTHON`, `PLANET_VENV` and `PLANET_WHEELHOUSE`, or with the corresponding command-line options.
+## 包与开发
 
-## Authorship and license
+包含 `planetr-format` 数据格式、`planetr-client` 异步客户端和 `planetr` 录制服务。
 
-Developed and maintained by [Renforce Dynamics](https://github.com/Renforce-Dynamics). See [AUTHORS.md](AUTHORS.md). Project code is available under the [MIT License](LICENSE).
+仅通过 [planetConfig](https://github.com/Renforce-Dynamics/planetConfig) 复用配置库，
+不依赖 Cadence 或 SDK。业务派生计算由使用记录的应用维护。
+
+开发：`./scripts/test.sh` 运行测试，`./scripts/build.sh` 构建安装包。
+
+工具支持 `--venv /path/to/env`。由 **Renforce Dynamics** 开发维护，采用 [MIT License](LICENSE)。
