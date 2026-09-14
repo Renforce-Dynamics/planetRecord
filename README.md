@@ -25,7 +25,7 @@ cd planetRecord
 | `planetr-client` | Bounded asynchronous producer client |
 | `planetr` | Session storage, ingress and replay |
 
-The `external/cadence` submodule supplies only `cadence-config`. Recording does not require a planner, kinematics, MuJoCo or inference packages.
+The [planetConfig](https://github.com/Renforce-Dynamics/planetConfig) submodule supplies `planet-config`. Bootstrap installs that loader and the three local packages. The complete source and package dependency graph is independent of any robot runtime or SDK.
 
 ## Configuration and usage
 
@@ -35,7 +35,7 @@ The `external/cadence` submodule supplies only `cadence-config`. Recording does 
 .venv/bin/planetr legacy --config configs/legacy.yaml --duration-s 1
 ```
 
-The generic `record` schema declares `bind`, `streams` and `directory`. The compatibility `legacy` schema declares `onboard`, `planner` and `recording` for PRR1/A3DB ingress. Both use `cadence-config` for `extends`, `compose` and package resources; these are distinct ingress schemas.
+The generic `record` schema declares `bind`, `streams` and `directory`. The compatibility `legacy` schema declares `onboard`, `planner` and `recording` for PRR1/A3DB ingress. Both use `planet-config` for `extends`, `compose` and package resources; these are distinct ingress schemas.
 
 Relative output directories are relative to the process working directory. Use an absolute output path for deployments. See [configuration and session semantics](docs/configuration.md).
 
@@ -51,6 +51,8 @@ Sessions contain `meta.json`, stream JSONL files and recording statistics. `comp
 ```
 
 Submodules pin source commits; Python requirements describe package compatibility. Bootstrap installs only the explicit packages in `source-workspace.json`. `scripts/setup.sh --wheelhouse /path/to/wheels` is available for package-based installation. Upgrade dependencies by committing reviewed submodule revisions with the parent repository.
+
+Tool defaults can be configured with `PLANET_PYTHON`, `PLANET_VENV` and `PLANET_WHEELHOUSE`, or with the corresponding command-line options.
 
 ## Authorship and license
 

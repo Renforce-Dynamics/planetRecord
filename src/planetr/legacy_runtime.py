@@ -10,7 +10,7 @@ import socket
 import time
 import zlib
 
-from cadence_config import load_config, validate_keys
+from planet_config import load_config, validate_keys
 
 
 from .protocol import A3DebugReassembler

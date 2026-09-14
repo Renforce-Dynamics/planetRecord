@@ -30,11 +30,11 @@ Relative output directories are resolved against the process working directory. 
 
 ## Source installation
 
-Bootstrap installs `cadence-config` from the pinned `external/cadence`, then the local format, client and recorder packages. It does not install Cadence runtime, a planner or kinematics.
+Bootstrap installs the root `planet-config` package from the pinned `external/planetConfig`, then the local format, client and recorder packages. The recursive source graph contains only Planet components. Recording runs independently of any controller or robot SDK.
 
 ## Layering rules
 
-All service configuration entry points use `cadence-config`; each service validates its own schema after composition.
+All service configuration entry points use `planet-config`; each service validates its own schema after composition.
 
 1. Apply `extends` entries in their listed order.
 2. Apply `compose` layers in the fixed order `robot`, `backend`, `task`, `site`, `experiment`.
@@ -47,4 +47,4 @@ Relative inheritance paths resolve beside the YAML declaring them. `pkg://packag
 
 Source ownership, Python dependencies and YAML inheritance are separate: Git submodules select code revisions; package metadata selects compatible installed distributions; `extends` selects configuration values. Changing a Git submodule does not select a task profile automatically.
 
-See the [shared loader reference](https://github.com/Renforce-Dynamics/cadence/blob/main/docs/configuration.md).
+See the [shared loader reference](https://github.com/Renforce-Dynamics/planetConfig/blob/main/docs/configuration.md).

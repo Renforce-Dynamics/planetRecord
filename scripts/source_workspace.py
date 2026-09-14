@@ -36,8 +36,8 @@ def check_sources():
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("action", choices=("init", "status", "check", "setup"))
-    p.add_argument("--python", default=os.environ.get("CADENCE_PYTHON", sys.executable))
-    p.add_argument("--venv", default=os.environ.get("CADENCE_VENV", str(ROOT / ".venv")))
+    p.add_argument("--python", default=os.environ.get("PLANET_PYTHON", sys.executable))
+    p.add_argument("--venv", default=os.environ.get("PLANET_VENV", str(ROOT / ".venv")))
     p.add_argument("--offline", action="store_true")
     p.add_argument("--extra", action="append", default=[])
     args = p.parse_args()

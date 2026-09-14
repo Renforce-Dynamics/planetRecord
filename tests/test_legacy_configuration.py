@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from cadence_config import ConfigError
+from planet_config import ConfigError
 from planetr.legacy_runtime import _load
 
 

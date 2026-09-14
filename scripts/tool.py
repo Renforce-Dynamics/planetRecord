@@ -20,11 +20,11 @@ def invoke(cmd):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("action", choices=["setup", "build", "test", "doctor", "run"])
-    p.add_argument("--python", default=os.environ.get("CADENCE_PYTHON", sys.executable))
+    p.add_argument("--python", default=os.environ.get("PLANET_PYTHON", sys.executable))
     p.add_argument(
-        "--venv", default=os.environ.get("CADENCE_VENV", str(ROOT / ".venv"))
+        "--venv", default=os.environ.get("PLANET_VENV", str(ROOT / ".venv"))
     )
-    p.add_argument("--wheelhouse", default=os.environ.get("CADENCE_WHEELHOUSE"))
+    p.add_argument("--wheelhouse", default=os.environ.get("PLANET_WHEELHOUSE"))
     p.add_argument("--out-dir", default=str(ROOT / "dist"))
     p.add_argument("--extra", action="append", default=[])
     args, extra = p.parse_known_args()

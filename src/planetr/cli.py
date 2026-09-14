@@ -7,7 +7,7 @@ from queue import Queue, Full, Empty
 from threading import Thread
 import socket
 import time
-from cadence_config import load_config, validate_keys
+from planet_config import load_config, validate_keys
 from planetr_format import RecordEnvelope
 from .session import SessionWriter, replay
 

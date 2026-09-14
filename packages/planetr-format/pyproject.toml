@@ -10,7 +10,7 @@ license = {file = "LICENSE"}
 name = "planetr-format"
 version = "0.1.0"
 requires-python = ">=3.10"
-description = "planetr-format: independent Cadence ecosystem component"
+description = "Versioned recording envelopes and session format contracts"
 dependencies = []
 
 [tool.setuptools.packages.find]

@@ -5,5 +5,5 @@ queue_capacity: 2048
 streams:
   robot/state: {schema: robot.state.v1, filename: robot/state.jsonl}
   robot/command: {schema: robot.command.v1, filename: robot/command.jsonl}
-  runtime/fsm: {schema: cadence.fsm.v1, filename: runtime/fsm.jsonl}
+  runtime/fsm: {schema: planet.fsm.v1, filename: runtime/fsm.jsonl}
   operator/input: {schema: operator.input.v1, filename: operator/input.jsonl}

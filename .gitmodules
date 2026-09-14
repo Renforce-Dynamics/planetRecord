@@ -1,3 +1,3 @@
-[submodule "cadence"]
-	path = external/cadence
-	url = git@github.com:Renforce-Dynamics/cadence.git
+[submodule "planetConfig"]
+	path = external/planetConfig
+	url = git@github.com:Renforce-Dynamics/planetConfig.git
