@@ -16,12 +16,12 @@ dependencies = ["planet-config>=0.1,<0.2", "planetr-format>=0.1,<0.2", "planetr-
 [project.scripts]
 planetr = "planetr.cli:main"
 
+[tool.setuptools]
+include-package-data = false
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["planetr*"]
-
-[tool.setuptools.package-data]
-"*" = ["**/*.yaml", "**/*.json", "**/*.xml", "**/*.STL", "**/*.stl", "**/*.onnx", "**/*.npz", "**/*.hex", "**/*.md", "**/*.lock", "**/LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

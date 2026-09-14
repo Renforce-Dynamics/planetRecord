@@ -18,7 +18,8 @@ def invoke(cmd):
 
 
 def main():
-    p = argparse.ArgumentParser(description=__doc__)
+    execution = sys.argv[1:2] in (["run"], ["doctor"], ["upper-stream"])
+    p = argparse.ArgumentParser(description=__doc__, add_help=not execution)
     p.add_argument("action", choices=["setup", "build", "test", "doctor", "run"])
     p.add_argument("--python", default=os.environ.get("PLANET_PYTHON", sys.executable))
     p.add_argument(
@@ -74,7 +75,7 @@ def main():
         if args.action == "test":
             invoke([python, "-m", "pytest", "tests", "-q"] + extra)
         else:
-            invoke([python] + CONFIG[args.action] + extra)
+            subprocess.run([str(python)] + CONFIG[args.action] + extra, check=True)
 
 
 if __name__ == "__main__":

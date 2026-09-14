@@ -29,8 +29,10 @@ def _unix_address(endpoint: str) -> str:
 
 
 def _load(path: str | Path) -> dict:
+    if "://" in str(path):
+        raise ValueError("configuration must be an explicit filesystem entry")
     resolved = load_config(
-        path,
+        Path(path).expanduser().resolve(),
         allowed={"version", "onboard", "planner", "planetd", "recording"},
         required={"version", "onboard", "planner", "recording"},
     )
@@ -157,7 +159,7 @@ def run(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", default="configs/common/planetr.yaml")
+    parser.add_argument("--config", required=True, help="Explicit legacy recorder entry YAML")
     parser.add_argument(
         "--dir",
         help="recording root override, for example recordings/sim2sim",

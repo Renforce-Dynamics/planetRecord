@@ -100,7 +100,7 @@ def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest="action", required=True)
     run = sub.add_parser("record")
-    run.add_argument("--config", default="pkg://planetr/data/default.yaml")
+    run.add_argument("--config", required=True, help="Explicit entry YAML, e.g. configs/entry/entry_recorder.yaml")
     run.add_argument("--duration-s", type=float, default=0)
     run.add_argument("--check", action="store_true")
     rep = sub.add_parser("replay")
@@ -108,6 +108,7 @@ def main(argv=None):
     rep.add_argument("--speed", type=float, default=0)
     legacy = sub.add_parser("legacy")
     legacy.add_argument("--config", required=True)
+    legacy.add_argument("--check", action="store_true")
     legacy.add_argument("--duration-s", type=float, default=0)
     legacy.add_argument("--dir")
     args = p.parse_args(argv)
@@ -118,8 +119,14 @@ def main(argv=None):
     if args.action == "legacy":
         from .legacy_runtime import _load, run
 
-        return run(_load(args.config), args.duration_s, args.dir)
-    cfg = load_config(args.config).data
+        cfg = _load(args.config)
+        if args.check:
+            print("PlanetRecord legacy configuration valid")
+            return 0
+        return run(cfg, args.duration_s, args.dir)
+    if "://" in args.config:
+        p.error("configuration must be an explicit filesystem entry")
+    cfg = load_config(Path(args.config).expanduser().resolve()).data
     if args.check:
         validate_keys(
             cfg,
